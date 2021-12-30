@@ -9,8 +9,6 @@ body:
       label: "What feature do you want to get added on the **base** engine?"
     validations:
       required: true
-      
-body:
   - type: textarea
     id: repro
     attributes:
@@ -24,8 +22,6 @@ body:
       render: bash
     validations:
       required: true
-
-body:
   - type: dropdown
     id: eyetest
     attributes:
