@@ -13,7 +13,9 @@ class ClientPrefs {
 	public static var flashing:Bool = true;
 	public static var globalAntialiasing:Bool = true;
 	public static var noteSplashes:Bool = true;
+	public static var noteTick:Bool = true;
 	public static var lowQuality:Bool = false;
+	public static var noteSpeed:Float = 1;
 	public static var framerate:Int = 60;
 	public static var cursing:Bool = true;
 	public static var violence:Bool = true;
@@ -97,6 +99,8 @@ class ClientPrefs {
 		FlxG.save.data.noteSplashes = noteSplashes;
 		FlxG.save.data.lowQuality = lowQuality;
 		FlxG.save.data.framerate = framerate;
+		FlxG.save.data.noteTick = noteTick;
+		FlxG.save.data.noteSpeed = noteSpeed;
 		//FlxG.save.data.cursing = cursing;
 		//FlxG.save.data.violence = violence;
 		FlxG.save.data.camZooms = camZooms;
@@ -180,6 +184,9 @@ class ClientPrefs {
 		if(FlxG.save.data.noteOffset != null) {
 			noteOffset = FlxG.save.data.noteOffset;
 		}
+		if(FlxG.save.data.noteSpeed != null) {
+			noteSpeed = FlxG.save.data.noteSpeed;
+		}
 		if(FlxG.save.data.arrowHSV != null) {
 			arrowHSV = FlxG.save.data.arrowHSV;
 		}
@@ -237,6 +244,9 @@ class ClientPrefs {
 		if (FlxG.save.data.mute != null)
 		{
 			FlxG.sound.muted = FlxG.save.data.mute;
+		}
+		if(FlxG.save.data.noteTick != null) {
+			noteTick = FlxG.save.data.noteTick;
 		}
 
 		var save:FlxSave = new FlxSave();
