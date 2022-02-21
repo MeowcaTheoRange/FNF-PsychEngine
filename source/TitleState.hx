@@ -199,8 +199,8 @@ class TitleState extends MusicBeatState
 	}
 
 	var logoBl:FlxSprite;
-	var gfDance:FlxSprite;
-	var danceLeft:Bool = false;
+	var logoBl2:FlxSprite;
+	var person:FlxSprite;
 	var titleText:FlxSprite;
 	var swagShader:ColorSwap = null;
 
@@ -252,28 +252,37 @@ class TitleState extends MusicBeatState
 		// bg.updateHitbox();
 		add(bg);
 
-		logoBl = new FlxSprite(titleJSON.titlex, titleJSON.titley);
-		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
+		logoBl = new FlxSprite(0, 0);
+		logoBl.frames = Paths.getSparrowAtlas('jim-logo-bumpin');
 		
 		logoBl.antialiasing = ClientPrefs.globalAntialiasing;
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
-		logoBl.animation.play('bump');
+		logoBl.animation.addByPrefix('bump1', 'bump', 24, false);
+		logoBl.animation.play('bump1');
+		logoBl.scale.set(0.4, 0.4);
 		logoBl.updateHitbox();
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 
-		swagShader = new ColorSwap();
-		gfDance = new FlxSprite(titleJSON.gfx, titleJSON.gfy);
-		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
-
-		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-		gfDance.antialiasing = ClientPrefs.globalAntialiasing;
+		logoBl2 = new FlxSprite(FlxG.width - 425, 75);
+		logoBl2.frames = Paths.getSparrowAtlas('frog_bumpin');
 		
-		add(gfDance);
-		gfDance.shader = swagShader.shader;
+		logoBl2.antialiasing = ClientPrefs.globalAntialiasing;
+		logoBl2.animation.addByPrefix('bump2', 'bump', 24, false);
+		logoBl2.animation.play('bump2');
+		logoBl2.scale.set(0.6, 0.6);
+		logoBl2.updateHitbox();
+
+		swagShader = new ColorSwap();
+		person = new FlxSprite(0, -87);
+		person.origin.set(1280, 807);
+		person.loadGraphic(Paths.image("menuassets/start/person"));
+		person.antialiasing = ClientPrefs.globalAntialiasing;
+		
+		add(person);
 		add(logoBl);
-		logoBl.shader = swagShader.shader;
+		add(logoBl2);
+		trace(logoBl.x, logoBl.y);
+		trace(logoBl2.x, logoBl2.y);
 
 		titleText = new FlxSprite(titleJSON.startx, titleJSON.starty);
 		#if (desktop && MODS_ALLOWED)
@@ -322,7 +331,7 @@ class TitleState extends MusicBeatState
 
 		credTextShit.visible = false;
 
-		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
+		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('LOGO_FROG'));
 		add(ngSpr);
 		ngSpr.visible = false;
 		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
@@ -508,20 +517,31 @@ class TitleState extends MusicBeatState
 
 	private var sickBeats:Int = 0; //Basically curBeat but won't be skipped if you hold the tab or resize the screen
 	public static var closedState:Bool = false;
+	var done = false;
 	override function beatHit()
 	{
 		super.beatHit();
 
 		if(logoBl != null) 
-			logoBl.animation.play('bump', true);
+			logoBl.animation.play('bump1', true);
 
-		if(gfDance != null) {
-			danceLeft = !danceLeft;
+		if(logoBl2 != null) 
+			logoBl2.animation.play('bump2', true);
 
-			if (danceLeft)
-				gfDance.animation.play('danceRight');
-			else
-				gfDance.animation.play('danceLeft');
+		if(person != null) {
+			if(!done) {
+				person.scale.y = 0.89;
+				person.y = 0;
+				FlxTween.tween(person, { 'scale.y': 1, y: -87 }, Conductor.crochet / 1000, {
+					ease: FlxEase.quartOut, 
+					type: ONESHOT, 
+					onComplete: function(tween:FlxTween) {
+						done = false;
+						trace("Done");
+					}
+				});
+				done = true;
+			}
 		}
 
 		if(!closedState) {
@@ -534,7 +554,6 @@ class TitleState extends MusicBeatState
 					#else
 					createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
 					#end
-				// credTextShit.visible = true;
 				case 3:
 					#if PSYCH_WATERMARKS
 					addMoreText('Shadow Mario', 15);
@@ -543,49 +562,28 @@ class TitleState extends MusicBeatState
 					#else
 					addMoreText('present');
 					#end
-				// credTextShit.text += '\npresent...';
-				// credTextShit.addText();
 				case 4:
 					deleteCoolText();
-				// credTextShit.visible = false;
-				// credTextShit.text = 'In association \nwith';
-				// credTextShit.screenCenter();
 				case 5:
-					#if PSYCH_WATERMARKS
-					createCoolText(['Not associated', 'with'], -40);
-					#else
-					createCoolText(['In association', 'with'], -40);
-					#end
+					createCoolText(['You\'re', 'playing'], -40);
 				case 7:
-					addMoreText('newgrounds', -40);
+					addMoreText('FNF Frog Man', -40);
 					ngSpr.visible = true;
-				// credTextShit.text += '\nNewgrounds';
 				case 8:
 					deleteCoolText();
 					ngSpr.visible = false;
-				// credTextShit.visible = false;
-
-				// credTextShit.text = 'Shoutouts Tom Fulp';
-				// credTextShit.screenCenter();
 				case 9:
 					createCoolText([curWacky[0]]);
-				// credTextShit.visible = true;
 				case 11:
 					addMoreText(curWacky[1]);
-				// credTextShit.text += '\nlmao';
 				case 12:
 					deleteCoolText();
-				// credTextShit.visible = false;
-				// credTextShit.text = "Friday";
-				// credTextShit.screenCenter();
 				case 13:
-					addMoreText('Friday');
-				// credTextShit.visible = true;
+					addMoreText('FNF');
 				case 14:
-					addMoreText('Night');
-				// credTextShit.text += '\nNight';
+					addMoreText('FROG MAN');
 				case 15:
-					addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
+					addMoreText('AND JIM');
 
 				case 16:
 					skipIntro();
